@@ -35,6 +35,7 @@ PROFILE_PATH = os.path.join(BASE, "profile", "profile.json")
 SCHEDULE_DIR = os.path.join(BASE, "schedule")
 INBOX_PATH = os.path.join(BASE, "inbox", "inbox.md")
 IS_MAC = platform.system() == "Darwin"
+TEMPLATE_REPO = "47zzz/secretary-agent"  # 公開範本；個人資料絕不能推到這裡
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -1353,6 +1354,20 @@ def cmd_doctor(args):
         os.remove(probe)
         return "可寫入"
     check("schedule/ 寫入", writable)
+
+    def git_remote():
+        if not os.path.isdir(os.path.join(BASE, ".git")) or not shutil.which("git"):
+            return "未使用 git（跨裝置同步停用）"
+        r = _git(["remote", "get-url", "origin"])
+        url = (r.stdout or "").strip()
+        if r.returncode != 0 or not url:
+            return "尚未設定遠端（資料只存在本機，手機端讀不到）"
+        if TEMPLATE_REPO in url:
+            raise RuntimeError(
+                "遠端仍指向公開範本！開始記錄個人資料前，"
+                "請照 SETUP.md 第 0 步建立自己的私有 repo 並 git remote set-url")
+        return url
+    check("git 遠端（必須是自己的私有 repo）", git_remote)
 
     if IS_MAC:
         import apple_bridge as ab

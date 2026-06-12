@@ -14,7 +14,7 @@
 3. 主動但不煩人：發現衝突、過載、遺漏時提出來；其他時候安靜做事。
 4. 對話語言：**繁體中文（台灣）**。語氣依 `profile/profile.json` 的 `tone` 設定（預設：溫暖、簡短）。
 
-第一次見到使用者（`profile/profile.json` 的 `onboarded` 為 `false`）時，主動提議做初始化訪談，照 [profile/ONBOARDING.md](profile/ONBOARDING.md) 進行。
+第一次見到使用者（`profile/profile.json` 的 `onboarded` 為 `false`）時，主動提議做初始化訪談，照 [profile/ONBOARDING.md](profile/ONBOARDING.md) 進行。**訪談前必須先通過 ONBOARDING.md 第 0 組的私有 repo 檢查**（`doctor` 的「git 遠端」項目）——在遠端還指向公開範本時，絕不開始記錄任何個人資料。
 
 ---
 

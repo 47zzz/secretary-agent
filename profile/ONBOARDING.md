@@ -2,6 +2,23 @@
 
 > 當 `profile/profile.json` 的 `onboarded` 是 `false`，或使用者說「初始化／重新認識我」時，照這份腳本進行。
 
+## 第 0 組（開始訪談前必做）：確認私有 repo ⚠️
+
+訪談會把使用者的作息、待辦、私人習慣寫進這個 repo，而每日排程和 `gitsync` 會**自動 push 到遠端**。所以開始問任何問題之前，你必須先確認遠端是使用者**自己的私有 repo**，不是公開範本：
+
+1. 跑 `python3 scripts/secretary.py doctor`，看「**git 遠端**」那一項。
+2. **✓ 通過**（顯示使用者自己的 repo 網址）→ 直接開始第 1 組。
+3. **✗ 顯示「遠端仍指向公開範本」**（或使用者說還沒建）→ **暫停訪談**，先一步一步帶他完成：
+   - 「我們先花 2 分鐘把你的私人保險箱建好，這樣你的資料才不會跑到公開的地方。」
+   - 帶他到 GitHub：右上「+」→ New repository → 取名（如 `my-secretary`）→ 選 **Private** → README/.gitignore/license 全部不勾 → Create。
+   - 請他把新 repo 網址貼給你，然後執行：
+     ```sh
+     git remote set-url origin https://github.com/<帳號>/<repo>.git
+     git push -u origin main
+     ```
+   - 重跑 `doctor` 確認「git 遠端」變 ✓，再開始訪談。
+4. 使用者堅持不用 git 遠端（純本機使用）→ 可以繼續，但明確告知：手機端的 Siri 簡報捷徑和雲端 session 會無法使用，且資料沒有異地備份。
+
 ## 訪談原則
 
 - **聊天，不是填表。** 一次問一組（最多 2–3 個小問題），等回答再問下一組。全程約 5 分鐘。

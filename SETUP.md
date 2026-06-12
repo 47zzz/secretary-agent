@@ -19,6 +19,7 @@
    ```
 
 3. 確認：`git remote -v` 應該顯示你的私有 repo；到 GitHub 重新整理你的私有 repo 頁面，看到檔案就完成了。
+   （`python3 scripts/secretary.py doctor` 的「git 遠端」項目會自動檢查這一步——沒做完它會一直 ✗ 提醒，初始化訪談也會被擋下。）
 
 之後所有同步（`gitsync`、每日排程的自動 push、雲端 session 的讀寫）都會進**你的私有 repo**，跟範本再無關係。
 
