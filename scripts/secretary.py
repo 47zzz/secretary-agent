@@ -679,6 +679,57 @@ def render_today_md(data, prof):
     return "\n".join(lines) + "\n"
 
 
+def speak_time(hhmm):
+    """把 14:30 轉成「下午2點30分」這種適合語音朗讀的說法。"""
+    try:
+        hh, mm = [int(x) for x in hhmm.split(":")]
+    except (ValueError, AttributeError):
+        return hhmm
+    if hh == 12:
+        label, h = "中午", 12
+    elif hh < 6:
+        label, h = "凌晨", hh
+    elif hh < 12:
+        label, h = "早上", hh
+    elif hh < 18:
+        label, h = "下午", hh - 12
+    else:
+        label, h = "晚上", hh - 12
+    return "{0}{1}點{2}".format(label, h, "{0}分".format(mm) if mm else "")
+
+
+def render_today_voice(data, prof):
+    """給 Siri 朗讀用的純文字簡報（捷徑從 GitHub 抓這個檔唸出來，見 SIRI.md）。
+
+    原則：短句、口語、不用任何符號和 emoji、數量點到為止。
+    """
+    today = data["today"]
+    parts = []
+    parts.append("{0}月{1}日，星期{2}。".format(today.month, today.day, ZH_WD[today.weekday()]))
+    if data["top3"]:
+        ordinals = ["第一", "第二", "第三"]
+        parts.append("今天有{0}件重點。".format(len(data["top3"])))
+        for i, t in enumerate(data["top3"]):
+            seg = "{0}，{1}".format(ordinals[i], t["title"])
+            if t.get("time"):
+                seg += "，{0}".format(speak_time(t["time"]))
+            parts.append(seg + "。")
+    else:
+        parts.append("今天沒有排定事項，可以自由安排。")
+    timeline_rest = [t for t in data["timeline"] if t not in data["top3"]]
+    if timeline_rest:
+        segs = ["{0}{1}".format(speak_time(t["time"]), t["title"]) for t in timeline_rest]
+        parts.append("時程還有：" + "；".join(segs) + "。")
+    if data["others"]:
+        parts.append("另外有{0}件一般待辦。".format(len(data["others"])))
+    if data["overdue"]:
+        parts.append("有{0}件之前順延的事，今天挑一件處理就好。".format(len(data["overdue"])))
+    if data["stale"]:
+        names = "、".join(t["title"] for _, t in data["stale"][:3])
+        parts.append("放了一陣子的事：{0}。想想要排時間、還是放下。".format(names))
+    return "\n".join(parts) + "\n"
+
+
 def render_today_html(data, prof):
     """給備忘錄用的簡單 HTML 版本（iPhone 上閱讀）。"""
     e = _html.escape
@@ -1078,6 +1129,7 @@ def cmd_today(args):
     data = build_today(db, prof)
     md = render_today_md(data, prof)
     write_schedule("today.md", md)
+    write_schedule("brief_voice.txt", render_today_voice(data, prof))
     print(md)
 
 
@@ -1146,6 +1198,7 @@ def cmd_morning(args):
     data = build_today(db, prof)
     md = render_today_md(data, prof)
     write_schedule("today.md", md)
+    write_schedule("brief_voice.txt", render_today_voice(data, prof))
     if IS_MAC:
         try:
             import apple_bridge as ab

@@ -86,6 +86,7 @@
 | [AGENTS.md](AGENTS.md) | **agent 的工作契約**（必讀） | 人類維護 |
 | [SETUP.md](SETUP.md) | Mac + iPhone 安裝指南 | 人類維護 |
 | [SYNC.md](SYNC.md) | 跨裝置策略：GitHub 大腦、Dispatch、雲端 session 的分工 | 人類維護 |
+| [SIRI.md](SIRI.md) | 語音層：Siri 唸簡報、語音問答的捷徑食譜 | 人類維護 |
 | [profile/](profile/) | 使用者作息與偏好（profile.json）、初始化訪談腳本 | 初始化時 agent 寫 |
 | [tasks/tasks.json](tasks/tasks.json) | ✅ 所有任務的唯一事實來源（只放「還活著的事」） | `secretary.py` / agent |
 | [tasks/archive/](tasks/) | 結案 14 天後的任務自動歸檔於此（依年份分檔） | `secretary.py` 自動 |

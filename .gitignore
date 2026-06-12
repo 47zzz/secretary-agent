@@ -4,6 +4,5 @@ __pycache__/
 *.pyc
 .DS_Store
 
-# 產生的視圖（由 secretary.py 隨時重新產生）
-schedule/today.md
-schedule/week.md
+# 注意：schedule/ 的產出（today.md、week.md、brief_voice.txt）刻意「納入」版控——
+# iPhone 的 Siri 捷徑和雲端 session 都從 GitHub 讀這些檔（見 SIRI.md / SYNC.md）。
