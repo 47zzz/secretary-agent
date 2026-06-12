@@ -1,5 +1,6 @@
 # 執行紀錄與快取
 logs/*.log
+logs/.last_autosync
 __pycache__/
 *.pyc
 .DS_Store
