@@ -9,8 +9,8 @@
 
 ```
                   ┌────────────────────────────┐
-                  │  GitHub（私有 repo）        │ ← 永遠在線的唯一共享真相
-                  │  47zzz/secretary-agent      │
+                  │  GitHub（你的私有 repo）     │ ← 永遠在線的唯一共享真相
+                  │  （SETUP.md 第 0 步建立）    │
                   └────┬──────────────┬────────┘
               git pull/push      cloud session clone/push
                        │              │
@@ -78,7 +78,7 @@
 ## 一次性設定（啟用手機端完整能力）
 
 1. **Dispatch（Mac 醒著時的遠端遙控）**：Mac 的 Claude Desktop 與 iPhone 的 Claude app 都更新到最新版（需 Pro/Max 方案）；在 Cowork 開啟工作階段後，手機 app 同一個對話串就能继续指派。記住它的兩個限制：單一對話串、桌機必須醒著且 app 開著。
-2. **雲端 session（Mac 關機時的完整秘書）**：到 [claude.ai/code](https://claude.ai/code) 用 GitHub 帳號授權存取 `47zzz/secretary-agent`（私有 repo 需明確授權）。之後手機 Claude app 就能對這個 repo 開雲端工作階段。
+2. **雲端 session（Mac 關機時的完整秘書）**：到 [claude.ai/code](https://claude.ai/code) 用 GitHub 帳號授權存取**你的私有 repo**（私有 repo 需明確授權）。之後手機 Claude app 就能對這個 repo 開雲端工作階段。
 3. **Mac 端**（已內建，無需設定）：morning/evening/weekly 自動 git pull/push；想手動同步就說「同步一下」或跑 `gitsync`。
 4. **省電小訣竅**：如果想要「出門時也能 Dispatch」，Mac 接電源時可在 系統設定 → 能源 開啟「防止自動進入睡眠」，並讓 Claude Desktop 留在背景——但這是可選的；這套架構的設計前提就是 Mac 不常開也能運作。
 

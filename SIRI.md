@@ -26,7 +26,7 @@
 
 1. GitHub → 右上頭像 → **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**
 2. 設定：
-   - **Repository access**：Only select repositories → 勾 `secretary-agent`
+   - **Repository access**：Only select repositories → 勾**你的私有 repo**（SETUP.md 第 0 步建立的那個）
    - **Permissions → Contents：Read-only**（其他全部不給）
    - 期限選最長（到期再換一個）
 3. 產生後**複製 token**（`github_pat_` 開頭，只顯示一次），貼進下面捷徑 A 的 Authorization 欄位。
@@ -40,7 +40,7 @@
 iPhone 捷徑 App → 新增捷徑，依序加入動作：
 
 1. **「取得 URL 內容」**（Get Contents of URL）
-   - URL：`https://api.github.com/repos/47zzz/secretary-agent/contents/schedule/brief_voice.txt`
+   - URL：`https://api.github.com/repos/你的帳號/你的私有repo/contents/schedule/brief_voice.txt`
    - 方法：`GET`
    - 標頭（Headers）加兩條：
      - `Authorization` → `Bearer github_pat_你的token`

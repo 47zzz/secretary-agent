@@ -1,17 +1,39 @@
 # SETUP.md — Mac 與 iPhone 安裝指南
 
-整個流程約 15 分鐘，做一次就好。**前提**：Mac 和 iPhone 登入同一個 Apple ID，且「提醒事項、行事曆、備忘錄」的 iCloud 同步已開啟（這通常是預設）。
+整個流程約 20 分鐘，做一次就好。**前提**：Mac 和 iPhone 登入同一個 Apple ID，且「提醒事項、行事曆、備忘錄」的 iCloud 同步已開啟（這通常是預設）。
+
+---
+
+## 第 0 步：把範本變成「你自己的私有 repo」（最重要）
+
+你現在看到的這個 repo 是**公開範本**，只放程式和空白資料。秘書實際運作後會儲存你的作息、待辦、每日回顧——這些**絕對不能放在公開 repo**。所以第一件事是把範本搬進自己的私有 repo：
+
+1. 到 GitHub 建一個**新的空 repo**：右上「+」→ New repository → 取名（如 `my-secretary`）→ 選 **Private** → **README / .gitignore / license 全部不要勾** → Create。
+2. 把範本 clone 下來，然後把遠端改指向你的私有 repo：
+
+   ```sh
+   git clone https://github.com/47zzz/secretary-agent.git my-secretary
+   cd my-secretary
+   git remote set-url origin https://github.com/你的帳號/my-secretary.git
+   git push -u origin main
+   ```
+
+3. 確認：`git remote -v` 應該顯示你的私有 repo；到 GitHub 重新整理你的私有 repo 頁面，看到檔案就完成了。
+
+之後所有同步（`gitsync`、每日排程的自動 push、雲端 session 的讀寫）都會進**你的私有 repo**，跟範本再無關係。
+
+> 想要乾淨的提交歷史（不保留範本的開發紀錄）可以改用：
+> ```sh
+> rm -rf .git && git init -b main && git add -A && git commit -m "init: 我的秘書工作區" && git remote add origin https://github.com/你的帳號/my-secretary.git && git push -u origin main
+> ```
+
+> 之後範本若有更新想撿回來：`git remote add template https://github.com/47zzz/secretary-agent.git && git pull template main --allow-unrelated-histories`（只在需要時做）。
 
 ---
 
 ## 第 1 步：把資料夾放到 Mac
 
-建議放在 **iCloud Drive**（`~/Library/Mobile Documents/com~apple~CloudDocs/secretary agent`，也就是 Finder 側欄的「iCloud 雲碟」），好處：
-
-- 連這個資料夾本身都跨裝置備份。
-- iPhone 的「檔案」App 可以直接打開 `schedule/today.md` 看簡報原文。
-
-放在任何其他位置也完全可以。
+第 0 步如果是在 Mac 上做的，這步已完成。建議 clone 到一般位置（如 `~/my-secretary`）即可——大腦的同步靠 git，不需要 iCloud Drive（git repo 放 iCloud 偶爾會同步衝突）。
 
 ## 第 2 步：確認 python3
 

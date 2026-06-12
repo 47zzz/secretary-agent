@@ -3,6 +3,8 @@
 > 一個用「純文字檔案」當大腦、用「Apple 原生 App」當手腳的個人日常秘書。
 > 你只要用講的，秘書幫你記下來、排好、提醒你 —— Mac 和 iPhone 自動同步，全程不離開 Apple 生態系。
 
+> 📌 **這個公開 repo 是「範本」**：只含程式與空白資料，歡迎 clone。實際使用的第一步是照 [SETUP.md](SETUP.md) **第 0 步**把它變成你自己的**私有 repo**——你的作息、待辦、日記只會存在那裡，跟這個範本無關。
+
 ---
 
 ## 這是什麼
@@ -51,7 +53,7 @@
 
 ## 快速開始（在 Mac 上）
 
-1. **把整個資料夾放到 Mac**。建議放在 iCloud Drive，這樣連 iPhone 的「檔案」App 都能直接看 `schedule/today.md`。
+1. **建立你的私有 repo 並 clone 到 Mac**（照 [SETUP.md](SETUP.md) 第 0 步：clone 範本 → `git remote set-url` 指向自己的私有 repo → push）。
 2. **跑健康檢查**（會自動建立提醒事項清單、觸發權限詢問）：
    ```sh
    python3 scripts/secretary.py doctor
