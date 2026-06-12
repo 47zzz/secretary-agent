@@ -1,0 +1,9 @@
+# 執行紀錄與快取
+logs/*.log
+__pycache__/
+*.pyc
+.DS_Store
+
+# 產生的視圖（由 secretary.py 隨時重新產生）
+schedule/today.md
+schedule/week.md

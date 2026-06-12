@@ -1,0 +1,2 @@
+# 一律用 LF：工作區的目標平台是 macOS（zsh/launchd 對 CRLF 敏感）
+* text=auto eol=lf

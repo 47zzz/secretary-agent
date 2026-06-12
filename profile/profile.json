@@ -1,0 +1,33 @@
+{
+  "onboarded": false,
+  "name_call": "",
+  "tone": "warm",
+  "timezone": "Asia/Taipei",
+  "wake_time": "08:00",
+  "sleep_time": "00:00",
+  "work_start": "09:30",
+  "work_end": "18:00",
+  "energy_peak": "morning",
+  "brief_time": "08:00",
+  "review_time": "21:30",
+  "weekly_plan": "sun 20:00",
+  "reminder_default_time": "09:00",
+  "archive_after_days": 14,
+  "stale_after_days": 7,
+  "tags_common": ["工作", "家務", "健康"],
+  "imessage_self": "",
+  "push": {
+    "reminders": true,
+    "calendar": true,
+    "notes_brief": true,
+    "imessage_brief": false
+  },
+  "apple": {
+    "list_inbox": "📥 收件匣",
+    "list_managed": "🤖 秘書",
+    "calendar": "秘書",
+    "notes_folder": "秘書",
+    "note_today": "📋 今日簡報",
+    "note_week": "🗓 本週計畫"
+  }
+}
