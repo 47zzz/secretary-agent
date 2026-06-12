@@ -51,12 +51,14 @@ install_one() {
 }
 
 echo "安裝 launchd 排程…"
-install_one morning "$BH" "$BM"
-install_one evening "$RH" "$RM"
-install_one weekly  "$WH" "$WM" "$WD"
+install_one morning  "$BH" "$BM"
+install_one evening  "$RH" "$RM"
+install_one weekly   "$WH" "$WM" "$WD"
+install_one autosync 0 0   # 監聽 tasks.json：一變動就自動同步（即時感的來源）
 
 echo ""
 printf "完成。早晨 %02d:%02d / 晚間 %02d:%02d / 週計畫 週%s %02d:%02d\n" \
   "$BH" "$BM" "$RH" "$RM" "$WD" "$WH" "$WM"
+echo "autosync：tasks.json 一有變動秒級觸發；每 30 分鐘也會自動對齊遠端。"
 echo "提示：第一次自動執行時，macOS 可能會詢問 python3 的自動化權限，請允許。"
 echo "立刻試跑一次：python3 \"$DIR/scripts/secretary.py\" morning"

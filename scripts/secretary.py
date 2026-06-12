@@ -20,6 +20,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import time
 
 # Windows 主控台預設編碼可能非 UTF-8，先行修正
 try:
@@ -1251,6 +1252,35 @@ def cmd_evening(args):
     print(msg)
 
 
+def cmd_autosync(args):
+    """launchd 監聽進入點：tasks.json 一變動（或每 30 分鐘）就自動對齊一切。
+
+    這是「即時感」的來源——任何 agent 改了任務，幾秒內自動推上提醒事項/行事曆/遠端，
+    使用者永遠不需要手動跑 sync。執行完即退出，無常駐。
+    """
+    # 防回聲：本函式自己會寫 tasks.json，會再觸發 WatchPaths——90 秒內重複觸發直接退出
+    marker = os.path.join(BASE, "logs", ".last_autosync")
+    try:
+        if os.path.exists(marker) and time.time() - os.path.getmtime(marker) < 90:
+            return
+    except OSError:
+        pass
+    os.makedirs(os.path.dirname(marker), exist_ok=True)
+    with open(marker, "w") as f:
+        f.write(str(time.time()))
+
+    print("--- autosync {0} ---".format(dt.datetime.now().strftime("%m-%d %H:%M:%S")))
+    git_pull()
+    db, prof = load_db(), load_profile()
+    synced = do_sync(db, prof, verbose=True)
+    if synced:
+        save_db(db)
+    data = build_today(db, prof)
+    write_schedule("today.md", render_today_md(data, prof))
+    write_schedule("brief_voice.txt", render_today_voice(data, prof))
+    git_commit_push("auto-sync: watch " + dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
 def cmd_weekly(args):
     """launchd 週計畫進入點。"""
     git_pull()
@@ -1446,6 +1476,7 @@ def main():
         ("morning", cmd_morning, "早晨流程（launchd 進入點）"),
         ("evening", cmd_evening, "晚間流程（launchd 進入點）"),
         ("weekly", cmd_weekly, "週計畫流程（launchd 進入點）"),
+        ("autosync", cmd_autosync, "監聽式自動同步（launchd 進入點，tasks.json 變動即觸發）"),
         ("review", cmd_review, "晚間回顧模板與統計"),
         ("archive", cmd_archive, "歸檔結案多日的任務（每日流程也會自動執行）"),
         ("gitsync", cmd_gitsync, "git 拉取＋推送（跨裝置同步大腦，見 SYNC.md）"),

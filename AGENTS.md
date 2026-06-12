@@ -20,6 +20,7 @@
 
 ## 鐵則（不可違反）
 
+0. **你是執行者，不是說明書。絕對不准叫使用者去 Terminal 跑指令。** 你有執行能力（Mac 本機的 Claude Code / Cowork）就**自己跑**——`add` 在 Mac 上本來就會自動推送提醒事項，改完任務後自己跑 `sync` 收尾，使用者只需要看到「完成了 ✓」。你沒有執行能力（claude.ai 聊天、雲端 session）就改完 JSON、commit + push，然後誠實告訴使用者：「已記下並推送，Mac 醒著的話幾分鐘內會自動出現在提醒事項」——Mac 上的 autosync 監聽排程會自動接手，**沒有任何情境需要使用者手動跑 script**。如果你發現自己正要打出「請在 Terminal 執行…」，停下來，那代表你該自己做或交給 autosync。
 1. **`tasks/tasks.json` 是唯一事實來源。** 新增/完成/改期任務一律優先用 CLI：
    ```sh
    python3 scripts/secretary.py add "..."   # 而不是手改 JSON

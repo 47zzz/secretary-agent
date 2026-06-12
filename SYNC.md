@@ -30,7 +30,7 @@
 
 1. **GitHub 是唯一共享真相**。tasks.json、profile、journal、所有記憶都在 repo 裡。任何裝置上的任何 Claude，「讀大腦」＝ clone/pull 這個 repo，「寫大腦」＝ commit + push。
 2. **Apple 層負責「即時」**。Siri 捕捉、提醒通知、簡報小工具走 iCloud，跟 Mac 開不開機無關——這層涵蓋了你在手機上 90% 的需求。
-3. **Mac 醒著時自動對齊**。`morning`/`evening`/`weekly` 流程頭尾自動 `git pull` / `git push`（已內建於 secretary.py）；agent 工作階段開始與結束跑 `gitsync`。Mac 一醒來就會追上世界，睡前會把世界更新。
+3. **Mac 醒著時自動對齊——而且是即時的**。`autosync` 監聽排程盯著 `tasks.json`：任何 agent 一改任務（或 git pull 拉下遠端變更），**幾秒內**自動推上提醒事項/行事曆並 push 遠端；另外每 30 分鐘自動拉一次遠端（接住手機端雲端 session 推上來的變更）。`morning`/`evening`/`weekly` 也各自頭尾 pull/push。全部執行完即退出，無常駐。
 
 ---
 
@@ -86,7 +86,7 @@
 
 ## 誠實的限制（設計時已考量）
 
-- **雲端 session 摸不到 Apple App**：雲端改了任務，iPhone 的「提醒事項」不會立刻多一條——要等 Mac 下次醒來補推。但別忘了：你在手機上本來就能直接看 repo 裡的 `schedule/`、或用 Siri 直接建提醒，所以實際體感影響很小。
+- **雲端 session 摸不到 Apple App**：雲端改了任務並 push 後，Mac 醒著的話 autosync 會在 30 分鐘內自動拉下來補推到提醒事項；Mac 闔蓋就等下次醒來。但別忘了：你在手機上本來就能直接看 repo 裡的 `schedule/`、或用 Siri 直接建提醒，所以實際體感影響很小。
 - **Dispatch 目前單一對話串**：不能同時派多件事；要併發就用雲端 session。
 - **launchd 排程在 Mac 闔蓋時不執行**：會在下次醒來後的整點補上節奏；而「準時提醒你某件事」這個職責本來就由 iPhone 的提醒事項/行事曆負責（iCloud 端），不受影響。
 
