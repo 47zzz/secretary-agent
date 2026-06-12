@@ -43,6 +43,9 @@
 | 晚上 21:30 | 同步完成狀態 → 統計今天成果 → 提醒你做 2 分鐘回顧 | launchd `evening` |
 | 週日 20:00 | 產生下週計畫 → 推到備忘錄 | launchd `weekly` |
 | 隨時 | 跟秘書講話：「記一下…」「我這週有什麼」「做完了」 | agent 對話 |
+| 出門在外 | Mac 醒著→Dispatch 遠端指派；Mac 關機→手機開雲端 session 對 repo 工作 | 見 [SYNC.md](SYNC.md) |
+
+大腦本體放在 GitHub 私有 repo（不是放在某一台機器上）——Mac 醒著時每日流程自動 pull/push，所以「Mac 不常開機」不影響手機端讀寫最新狀態。完整的跨裝置分工見 [SYNC.md](SYNC.md)。
 
 ---
 
@@ -82,6 +85,7 @@
 |------|------|--------|
 | [AGENTS.md](AGENTS.md) | **agent 的工作契約**（必讀） | 人類維護 |
 | [SETUP.md](SETUP.md) | Mac + iPhone 安裝指南 | 人類維護 |
+| [SYNC.md](SYNC.md) | 跨裝置策略：GitHub 大腦、Dispatch、雲端 session 的分工 | 人類維護 |
 | [profile/](profile/) | 使用者作息與偏好（profile.json）、初始化訪談腳本 | 初始化時 agent 寫 |
 | [tasks/tasks.json](tasks/tasks.json) | ✅ 所有任務的唯一事實來源（只放「還活著的事」） | `secretary.py` / agent |
 | [tasks/archive/](tasks/) | 結案 14 天後的任務自動歸檔於此（依年份分檔） | `secretary.py` 自動 |

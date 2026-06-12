@@ -29,7 +29,10 @@
 3. **Apple 橋接（提醒事項/行事曆/備忘錄/通知）只能在 macOS 上執行。** 在其他平台上，CLI 會自動略過 Apple 同步、只操作檔案 —— 這是正常行為，不要試圖繞過。
 4. **不刪除 `journal/` 的任何內容**（那是使用者的回顧紀錄），**不把這個資料夾的內容傳到任何外部服務**。
 5. 完成任務用 `done`，放棄任務用 `drop`，**不要直接從 JSON 刪除任務**（歷史紀錄有價值）。
-6. **系統整潔也是你的職責。** 這個工作區不該堆放已完成或放到發霉的東西：
+6. **遵守跨裝置同步協定（詳見 [SYNC.md](SYNC.md)）。** 這個 repo 的 GitHub 遠端是唯一共享真相，你可能是「Mac 本機的 Claude」也可能是「雲端 session 的 Claude」：
+   - 工作階段**開始**先跑 `python3 scripts/secretary.py gitsync`（拉取最新），**結束**再跑一次（推送你的變更）。沒推上去的工作，其他裝置看不見。
+   - 雲端/非 macOS 環境：Apple 推送會自動略過，新任務的 `reminder_synced` 保持 `false` 即可，Mac 下次醒來會自動補推。雲端 session 結束前**必須** push。
+7. **系統整潔也是你的職責。** 這個工作區不該堆放已完成或放到發霉的東西：
    - 結案（done/dropped）超過 `archive_after_days`（預設 14 天）的任務，每日流程會自動搬到 `tasks/archive/<年>.json`，也可手動跑 `archive`。tasks.json 上永遠只有「還活著的事」。
    - 短期事項放超過 `stale_after_days`（預設 7 天）沒動，會出現在今日簡報的「🕰 放了一陣子」區塊。看到它們時你要**主動**跟使用者確認三選一：排個時間／拆小一點／放下（drop）。語氣不帶責備。
 
@@ -57,6 +60,7 @@ python3 scripts/secretary.py <指令>
 | `morning` / `evening` / `weekly` | launchd 的進入點（同步＋簡報＋通知），也可手動跑 |
 | `review` | 顯示晚間回顧的提問模板和今日統計 |
 | `archive` | 歸檔結案多日的任務（每日流程也會自動執行） |
+| `gitsync` | git 拉取＋推送（跨裝置同步大腦；工作階段頭尾各跑一次） |
 | `notify "訊息"` | 發 Mac 通知 |
 | `doctor` | 健康檢查（環境、權限、清單是否存在） |
 

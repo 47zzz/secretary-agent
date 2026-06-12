@@ -323,6 +323,63 @@ def task_age_days(t, today):
         return 0
 
 
+# ================================================================ git 同步（跨裝置的大腦同步，見 SYNC.md）
+
+def _git(args_list, timeout=60):
+    return subprocess.run(["git", "-C", BASE] + args_list,
+                          capture_output=True, text=True, timeout=timeout)
+
+
+def git_available():
+    if not os.path.isdir(os.path.join(BASE, ".git")) or not shutil.which("git"):
+        return False
+    try:
+        return bool(_git(["remote"]).stdout.strip())
+    except Exception:
+        return False
+
+
+def git_pull(verbose=True):
+    """工作開始前拉取遠端（手機端雲端 session 可能推過新狀態）。離線/失敗不阻擋。"""
+    if not git_available():
+        return False
+    try:
+        r = _git(["pull", "--rebase", "--autostash", "--quiet"], timeout=90)
+        if r.returncode != 0:
+            print("⚠️ git pull 失敗（離線？）：{0}".format((r.stderr or "").strip()[:150]))
+            return False
+        if verbose:
+            print("🔄 已從遠端拉取最新狀態")
+        return True
+    except Exception as e:
+        print("⚠️ git pull 失敗：{0}".format(e))
+        return False
+
+
+def git_commit_push(message, verbose=True):
+    """工作結束後提交並推送，讓其他裝置上的 Claude 讀得到最新狀態。離線/失敗不阻擋。"""
+    if not git_available():
+        return False
+    try:
+        _git(["add", "-A"])
+        staged = _git(["diff", "--cached", "--quiet"])
+        if staged.returncode != 0:  # 有變更才 commit
+            r = _git(["commit", "-m", message, "--quiet"])
+            if r.returncode != 0:
+                print("⚠️ git commit 失敗：{0}".format((r.stderr or "").strip()[:150]))
+                return False
+        r = _git(["push", "--quiet"], timeout=90)
+        if r.returncode != 0:
+            print("⚠️ git push 失敗（離線？下次會再試）")
+            return False
+        if verbose:
+            print("☁️ 已推送到遠端（其他裝置的 Claude 可讀到最新狀態）")
+        return True
+    except Exception as e:
+        print("⚠️ git push 失敗：{0}".format(e))
+        return False
+
+
 # ================================================================ 快速語法
 
 def parse_quickadd(text, today=None):
@@ -1077,7 +1134,8 @@ def cmd_inbox(args):
 
 
 def cmd_morning(args):
-    """launchd 早晨進入點：同步 → 簡報 → 備忘錄 → 通知。"""
+    """launchd 早晨進入點：git 拉取 → Apple 同步 → 簡報 → 備忘錄 → 通知 → git 推送。"""
+    git_pull()
     db, prof = load_db(), load_profile()
     synced = do_sync(db, prof, verbose=True)
     archived = archive_old(db, prof)
@@ -1105,11 +1163,13 @@ def cmd_morning(args):
                 ab.send_imessage(prof["imessage_self"], "\n".join(text_lines))
         except Exception as e:
             print("⚠️ 推送簡報失敗：{0}".format(e))
+    git_commit_push("auto-sync: morning " + dt.date.today().isoformat())
     print(md)
 
 
 def cmd_evening(args):
-    """launchd 晚間進入點：同步完成狀態 → 統計 → 回顧提醒。"""
+    """launchd 晚間進入點：git 拉取 → 同步完成狀態 → 統計 → 回顧提醒 → git 推送。"""
+    git_pull()
     db, prof = load_db(), load_profile()
     synced = do_sync(db, prof, verbose=True)
     archived = archive_old(db, prof)
@@ -1133,11 +1193,13 @@ def cmd_evening(args):
             ab.notify(msg, subtitle="🌙 晚間回顧時間")
         except Exception as e:
             print("⚠️ 通知失敗：{0}".format(e))
+    git_commit_push("auto-sync: evening " + dt.date.today().isoformat())
     print(msg)
 
 
 def cmd_weekly(args):
     """launchd 週計畫進入點。"""
+    git_pull()
     db, prof = load_db(), load_profile()
     synced = do_sync(db, prof, verbose=True)
     archived = archive_old(db, prof)
@@ -1158,6 +1220,7 @@ def cmd_weekly(args):
                       subtitle="🗓 每週計畫")
         except Exception as e:
             print("⚠️ 推送週計畫失敗：{0}".format(e))
+    git_commit_push("auto-sync: weekly " + dt.date.today().isoformat())
     print(md)
 
 
@@ -1183,6 +1246,15 @@ def cmd_review(args):
     print("  1. 今天完成的事裡，哪件最有感？")
     print("  2. 明天最重要的一件事是什麼？（順手 add 成 !1）")
     print("  3. 有什麼想記下來的？")
+
+
+def cmd_gitsync(args):
+    """拉取＋推送遠端。agent 在每次工作階段開始/結束時呼叫（見 SYNC.md）。"""
+    if not git_available():
+        print("（沒有 git 遠端設定，略過）")
+        return
+    git_pull()
+    git_commit_push("sync: " + dt.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
 def cmd_archive(args):
@@ -1308,6 +1380,7 @@ def main():
         ("weekly", cmd_weekly, "週計畫流程（launchd 進入點）"),
         ("review", cmd_review, "晚間回顧模板與統計"),
         ("archive", cmd_archive, "歸檔結案多日的任務（每日流程也會自動執行）"),
+        ("gitsync", cmd_gitsync, "git 拉取＋推送（跨裝置同步大腦，見 SYNC.md）"),
         ("doctor", cmd_doctor, "健康檢查"),
     ]:
         sp = sub.add_parser(name, help=help_)

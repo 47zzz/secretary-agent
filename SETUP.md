@@ -59,6 +59,12 @@ zsh automation/install.sh
 
 ---
 
+## 第 6 步（可選但推薦）：啟用手機端的完整秘書
+
+到 [claude.ai/code](https://claude.ai/code) 授權 GitHub 存取 `secretary-agent` repo——之後 Mac 關機時，手機的 Claude app 也能開雲端工作階段讀寫整個秘書系統。Mac 醒著時則可用 Claude app 的 Dispatch 直接遙控桌機。兩者的分工與限制見 [SYNC.md](SYNC.md)。
+
+---
+
 ## iPhone 端設定（5 分鐘）
 
 iPhone 上**不用安裝任何東西**，只要把內建 App 擺好位置：
